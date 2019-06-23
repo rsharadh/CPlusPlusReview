@@ -11,6 +11,13 @@ void Display(const std::vector<int> events) {
   std::cout<<std::endl;
 }
 
+int MaxValue(const std::vector<int> list ) {
+	int max_value = -100000;
+	for (const auto& value : list ) {
+		max_value = std::max(value, max_value);
+	}
+	return max_value;
+}
 int FindLongestLessThan(
 	const std::vector<std::vector<int>>& candidates_sequences, 
 	const int upper_bound) {
@@ -101,11 +108,38 @@ std::vector<std::vector<int>> FindLongestIncreasingSubsequence(const std::vector
 	return increasing_subsequences_n;
 }
 
+void FindLongestIncreasingSubsequenceLength(
+	const std::vector<int>& list, const int end_index, 
+	std::vector<int>* longest_subsequence_lengths_ending_in) {
+	if (list.size() == 1) {
+		(*longest_subsequence_lengths_ending_in)[0] = 1;
+		return;
+	}
+	int max_length = -1;
+	for (int index = 0; index < end_index; index++) { 
+		if ((*longest_subsequence_lengths_ending_in)[index] == 0) {
+			FindLongestIncreasingSubsequenceLength(
+				std::vector<int>(
+					list.begin(), 
+					list.begin() + index + 1), 
+				index, longest_subsequence_lengths_ending_in);
+		}
+		if (list[index] <= list[end_index]) {
+			if ((*longest_subsequence_lengths_ending_in)[index] >= max_length) {
+				max_length = (*longest_subsequence_lengths_ending_in)[index];
+			}
+		}
+	}
+	(*longest_subsequence_lengths_ending_in)[end_index] = 
+		 max_length == -1 
+		 ? 1 
+		 : max_length + 1;
+}
 } // namespace
 
 int main(int argc, char** argv) {
-	std::vector<int> list = {1, 3, 0, 7, 2, 10, 55, -1, 100, 3, 4, 5, 6, 7, 7, 8, 9};
-	//std::vector<int> list = {1, 2, 3, 4};
+	//std::vector<int> list = {1, 3, 0, 7, 2, 10, 55, -1, 100, 3, 4, 5, 6, 7, 7, 8, 9};
+	std::vector<int> list = {1, 2, 3};
 
 	std::cout<<"list ";Display(list);
 
@@ -113,5 +147,13 @@ int main(int argc, char** argv) {
 	const auto& increasing_subsequences = FindLongestIncreasingSubsequence(list);
 	std::cout<<"Longest increasing subsequence ";
 	Display(increasing_subsequences[FindLongestLessThan(increasing_subsequences, 1e9)]);
+
+	std::vector<int> longest_subsequence_lengths_ending_in(list.size(), 0);
+	FindLongestIncreasingSubsequenceLength(
+			list, list.size() - 1, 
+			&longest_subsequence_lengths_ending_in); 
+	std::cout<<"Longest increasing subsequenc length "
+		<<MaxValue(longest_subsequence_lengths_ending_in)
+		<<std::endl;
 	return 0;
 }
