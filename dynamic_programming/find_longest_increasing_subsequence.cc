@@ -55,8 +55,11 @@ std::vector<std::vector<int>> FindLongestIncreasingSubsequence(const std::vector
 		increasing_subsequences_n_minus_1, list.back());
 
 	if (max_length_index == -1) {
+		// No subsequence in n-1 has an end element less than list.back().
+		// So add new subsequence beginning with list.back().
 		increasing_subsequences_n_minus_1.push_back({list.back()});
 	} else {
+		// Clone and extend long subsequence with end value <= list.back().
 		auto longest_sequence_less_than = increasing_subsequences_n_minus_1[max_length_index];
 		longest_sequence_less_than.push_back(list.back());
 		increasing_subsequences_n_minus_1.push_back(longest_sequence_less_than);
