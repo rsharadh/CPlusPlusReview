@@ -20,8 +20,22 @@ int FindLongestLessThan(
 	for (const auto& candidate_sequence: candidates_sequences) {
 		if (candidate_sequence.back() <= upper_bound) {
 			if (candidate_sequence.size() >= max_length) {
-				max_length = candidate_sequence.size();
-				max_length_index = index;
+			   if (candidate_sequence.size() > max_length) {
+					max_length = candidate_sequence.size();
+					max_length_index = index;
+				} else {
+					if (candidate_sequence.back() > 
+						candidates_sequences[max_length_index].back()) {
+						// If there are two candidate sequences of same
+						// length, then we choose the one with the larger
+						// end value. E.g. consider 1, 3, -1, 0
+						// Two candidates for extension are {1, 3} and {-1, 0}
+						// If the upper_bound = 6, we choose {1, 3} for extension 
+						// because if in the future, a element between 0 and 3 is
+						// added {-1, 0} can still be extended.
+						max_length_index = index;
+					}
+				}
 			}
 		}
 		index++;
