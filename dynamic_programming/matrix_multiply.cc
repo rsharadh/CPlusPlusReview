@@ -58,6 +58,7 @@ void OptimizeMatrixMultiplication(const std::vector<Matrix>& matrix_vector) {
 	for (int index = 0; index < num_matrices ; index++) {
 		multiplication_costs.push_back(std::vector<int>(num_matrices, 1e6));
 		split_location.push_back(std::vector<int>(num_matrices, -1));
+		multiplication_costs[index][index] = 0;
 	}
 
 	for (int start_index = 0; start_index < num_matrices - 1; start_index++) {
@@ -66,31 +67,14 @@ void OptimizeMatrixMultiplication(const std::vector<Matrix>& matrix_vector) {
 				matrix_vector[start_index], 
 				matrix_vector[start_index + 1]);
 	}
-	for (int start_index = 0; start_index < num_matrices - 1; start_index++) {
-		// multiply matrix_vector[start_index], matrix_vector[start_index+ 1] first
-		int cost_a = 
-			multiplication_costs[start_index][start_index + 1] + 
-			(matrix_vector[start_index].rows * 
-			 matrix_vector[start_index + 1].cols * 
-			 matrix_vector[start_index + 2].cols);
-		int cost_b = 
-			multiplication_costs[start_index + 1][start_index + 2] + 
-			(matrix_vector[start_index].rows * 
-			 matrix_vector[start_index + 1].rows * 
-			 matrix_vector[start_index + 2].cols);	
-		int min_cost = std::min(cost_a, cost_b);
-		int min_split_location = cost_a < cost_b ? start_index + 1 : start_index;
-		multiplication_costs[start_index][start_index + 2] = min_cost;
-		split_location[start_index][start_index + 2] = min_split_location;
-	}
 
-	for (int offset = 3; offset < num_matrices; offset++) {
+	for (int offset = 2; offset < num_matrices; offset++) {
 		for (int start_index = 0; start_index + offset < num_matrices; 
 		start_index++) {
 			int min_cost = 1e7;
 			int min_split_location = -1;
-			for (int running_offset = 1; 
-				running_offset < offset - 1; 
+			for (int running_offset = 0; 
+				running_offset < offset; 
 				running_offset++) {
 				int candidate_split_loc = 
 					start_index + running_offset;
@@ -132,13 +116,13 @@ void OptimizeMatrixMultiplication(const std::vector<Matrix>& matrix_vector) {
 }  // namespace
 
 int main (int argc, char** argv) {
-	std::vector<int> matrix_mul_dims = 
-	{5,4,3,10,12,100,7,9,3,25,10,8,9};
+	// std::vector<int> matrix_mul_dims = 
+	// {5,4,3,10,12,100,7,9,3,25,10,8,9};
 
 	// std::vector<int> matrix_mul_dims = 
 	// {5,4,3,10};
-	// std::vector<int> matrix_mul_dims = 
-	// {30, 35, 15, 5, 10, 20, 25};
+	std::vector<int> matrix_mul_dims = 
+	{30, 35, 15, 5, 10, 20, 25};
 	//OptimizeMatrixMultiplication(matrix_mul_dims);
 
 	std::cout<<"Naieve calculation (sequential multiplies) "<<cumulative_product(matrix_mul_dims)<<std::endl;
