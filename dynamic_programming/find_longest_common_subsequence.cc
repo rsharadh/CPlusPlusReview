@@ -44,9 +44,9 @@ int main(int argc, char** argv) {
 	// std::vector<std::string> sequence_b = {"A", "B", "C"};
 	
 	std::vector<std::string> sequence_a = 
-	{ "A", "C", "X", "A", "D", "F", "B", "G" , "T", "C" , "A"}; 
+	{ "Q", "A", "C", "X", "A", "D", "F", "B", "G" , "T", "C" , "A"}; 
 	std::vector<std::string> sequence_b = 
-	{  "G", "Y", "M", "A", "N", "Z", "T", "C" , "A"};
+	{  "P", "G", "Y", "M", "A", "N", "Z", "T", "C" , "A"};
 
 	// std::vector<std::string> sequence_a = {"A", "B", "C"};
 	// std::vector<std::string> sequence_b = {"K", "B", "Z", "D", "E", "F", "C"};
@@ -140,5 +140,11 @@ int main(int argc, char** argv) {
 		common_structure[
 			sequence_a.size() - 1][
 			sequence_b.size() - 1])<<std::endl;
+
+	for (int index_a = 0; index_a < sequence_a.size(); ++index_a) {
+		for (int index_b = 0; index_b < sequence_b.size(); ++index_b) {
+			delete common_structure[index_a][index_b];
+		}
+	}
 	return 0;
 }
