@@ -43,7 +43,7 @@ int FindLongestLessThan(
 	return max_length_index;
 }
 
-std::vector<std::vector<int>> FindLongestIncreasingSubsequence(const std::vector<int>& list) {
+std::vector<std::vector<int>> FindLongestIncreasingSubsequence(const std::vector<int>& list, const bool is_prune_suboptimal = true) {
 	if (list.size() == 1) {
 		return {list};
 	}
@@ -62,7 +62,7 @@ std::vector<std::vector<int>> FindLongestIncreasingSubsequence(const std::vector
 		increasing_subsequences_n_minus_1.push_back(longest_sequence_less_than);
 	}
 
-	if (true) {
+	if (is_prune_suboptimal) {
 		// Pruning sequences that cant be optimal.
 		std::unordered_multimap<unsigned int, const std::vector<int>*> length_to_sequence_pointers;
 		std::unordered_set<int> unique_lengths;
@@ -73,6 +73,10 @@ std::vector<std::vector<int>> FindLongestIncreasingSubsequence(const std::vector
 		for (const auto& length : unique_lengths) {
 			const std::vector<int>* chosen_sequence_ptr = nullptr;
 			const auto& range = length_to_sequence_pointers.equal_range(length);
+			// Find all sequences of length "length" and retain only the one
+			// with the smallest end element, since the if there are two increasing
+			// sequences of same length, the one with the smaller end element will 
+			// be more optimal. 
 			for (
 				auto it = range.first; 
 				it != range.second; 
