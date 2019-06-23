@@ -102,6 +102,7 @@ int main(int argc, char** argv) {
 
 	std::cout<<"list ";Display(list);
 
+	// Reference solution: https://www.geeksforgeeks.org/longest-monotonically-increasing-subsequence-size-n-log-n/
 	const auto& increasing_subsequences = FindLongestIncreasingSubsequence(list);
 	std::cout<<"Longest increasing subsequence ";
 	Display(increasing_subsequences[FindLongestLessThan(increasing_subsequences, 1e9)]);
