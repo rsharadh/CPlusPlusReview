@@ -3,7 +3,7 @@
 #include <vector>
 
 namespace {
-
+// https://www.geeksforgeeks.org/wildcard-pattern-matching/
 bool IsRegexMatch(const std::string& text, const std::string& pattern) {
 	// is_match_at[i][j] represents matching with the first i text
 	// characters and the first j pattern characters. 
