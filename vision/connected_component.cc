@@ -133,7 +133,7 @@ public:
 		}
 	}
 
-	void rand_init(const T min = 0, const T max = 255) {
+	void RandInit(const T min = 0, const T max = 255) {
 		unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 		//std::cout<<"seed "<<seed<<std::endl;
 		//unsigned seed = 1892949966;
@@ -146,13 +146,13 @@ public:
 		}
 	}
 
-	void add_label(int* num_labels, 
+	void AddLabel(int* num_labels, 
 		std::vector<std::vector<int>>* label_equivalences) {
 		(*num_labels) += 1;
 		label_equivalences->push_back(std::vector<int>());
 	}
 
-	bool is_label_in_equivalences(
+	bool IsLabelInEquivalences(
 		const std::vector<int>& label_equivalences_for, 
 		const int label_of_interest) {
 		bool is_label_in_equivalences_list = false;
@@ -165,33 +165,33 @@ public:
 		return is_label_in_equivalences_list;
 	}
 
-	void update_label_equivalences( 
+	void UpdateLabelEquivalences( 
 		std::vector<std::vector<int>>* label_equivalences, 
 		const int west_label, const int north_label) {
 		if (west_label == north_label) {
 			return;
 		}
-		if (!is_label_in_equivalences(
+		if (!IsLabelInEquivalences(
 				(*label_equivalences)[north_label-1], west_label)) {
 			(*label_equivalences)[north_label-1].push_back(
 				west_label);
 		}
 
-		if (!is_label_in_equivalences(
+		if (!IsLabelInEquivalences(
 				(*label_equivalences)[west_label-1], north_label)) {
 			(*label_equivalences)[west_label-1].push_back(
 				north_label);
 		}
 	}
 
-	void find_connected_components() {
+	void FindConnectedComponents() {
 		int num_labels = 0;
 		std::vector<std::vector<int>> label_equivalences;
  		for (unsigned int row = 0; row < height_; row++) {
 			for (unsigned int col = 0; col < width_; col++) {
 				if (row == 0 && col == 0) {
 					if (data_[row][col] != 0) {
-						add_label(&num_labels, &label_equivalences);
+						AddLabel(&num_labels, &label_equivalences);
 						labels_[row][col] = num_labels;
 					}
 					continue;
@@ -205,7 +205,7 @@ public:
 					if (current_pixel == west_pixel) {
 						labels_[row][col] = labels_[row][col - 1];
 					} else {
-						add_label(&num_labels, &label_equivalences);
+						AddLabel(&num_labels, &label_equivalences);
 						labels_[row][col] = num_labels;
 					}
 				}
@@ -214,7 +214,7 @@ public:
 					if (current_pixel == north_pixel) {
 						labels_[row][col] = labels_[row - 1][col];
 					} else {
-						add_label(&num_labels, &label_equivalences);
+						AddLabel(&num_labels, &label_equivalences);
 						labels_[row][col] = num_labels;
 					}
 				}
@@ -224,7 +224,7 @@ public:
 					int north_label = labels_[row - 1][col];
 					int west_label = labels_[row][col - 1];
 					if (north_pixel == 0 && west_pixel == 0) {
-						add_label(&num_labels, &label_equivalences);
+						AddLabel(&num_labels, &label_equivalences);
 						labels_[row][col] = num_labels;
 						continue;
 					}
@@ -236,7 +236,7 @@ public:
 						labels_[row][col] = north_label;
 						continue;
 					}
-					update_label_equivalences(&label_equivalences, west_label, north_label);
+					UpdateLabelEquivalences(&label_equivalences, west_label, north_label);
 					labels_[row][col] = west_label;
 				}
 			}
@@ -305,10 +305,10 @@ public:
 		}
 	}
 
-	T** ptr() const {return data_;}
-	int** label_ptr() const {return labels_;}
-	int width() const {return width_;}
-	int height() const {return height_;}
+	T** Ptr() const {return data_;}
+	int** LabelPtr() const {return labels_;}
+	int Width() const {return width_;}
+	int Height() const {return height_;}
 
 private:
   int height_;
@@ -323,11 +323,11 @@ int main(int argc, char** argv) {
 	int num_rows = 4;
 	int num_cols = 4;
 	Image<int> image(num_rows, num_cols);
-	image.rand_init(0, 1);
+	image.RandInit(0, 1);
 	std::cout<<"printing image after rand_init"<<std::endl;
-	Print<int>(image.ptr(), image.height(), image.width());
-	image.find_connected_components();
+	Print<int>(image.Ptr(), image.Height(), image.Width());
+	image.FindConnectedComponents();
 	std::cout<<"printing image connected components"<<std::endl;
-	Print<int>(image.label_ptr(), image.height(), image.width());
+	Print<int>(image.LabelPtr(), image.Height(), image.Width());
 	return 0;
 }
