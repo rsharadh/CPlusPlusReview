@@ -68,7 +68,7 @@ public:
 		}
 	}
 
-	double sum() const {
+	double Sum() const {
 		double sum;
 		for (unsigned int row = 0; row < height_; row++) {
 			for (unsigned int col = 0; col < width_; col++) {
@@ -78,7 +78,7 @@ public:
 		return sum;
 	}
 
-	void rand_init(const T min = 0, const T max = 255) {
+	void RandInit(const T min = 0, const T max = 255) {
 		unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
   		std::default_random_engine generator (seed);
   		for (unsigned int row = 0; row < height_; row++) {
@@ -89,7 +89,7 @@ public:
 		}
 	}
 
-	void integrate() {
+	void Integrate() {
 		sum_[0][0] = data_[0][0];
 		unsigned int col = 0;
 		for (unsigned int row = 1; row < height_; row++) {
@@ -110,7 +110,7 @@ public:
 		}		
 	}
 
-	double sum(int row_min, int col_min, int row_max, int col_max) {
+	double Sum(int row_min, int col_min, int row_max, int col_max) {
 		if (row_max < 0 || col_max < 0 || row_max >= height_ || col_max >= width_) {
 			throw std::string("Out of bounds!!");
 		}
@@ -131,7 +131,7 @@ public:
 		return sum; 
 	}
 
-	void print() {
+	void Print() {
 		for (unsigned int row = 0; row < height_; row++) {
 			for (unsigned int col = 0; col < width_; col++) {
 				std::cout<<static_cast<int>(data_[row][col])<<" "; 
@@ -140,7 +140,7 @@ public:
 		}	
 	}
 
-	void print_sum() {
+	void PrintSum() {
 		for (unsigned int row = 0; row < height_; row++) {
 			for (unsigned int col = 0; col < width_; col++) {
 				std::cout<<sum_[row][col]<<" "; 
@@ -160,33 +160,33 @@ private:
 int main(int argc, char** argv) {
 
 	// Image<unsigned char> uchar_image(100, 100);
-	// std::cout<<"uchar_image sum "<<uchar_image.sum()<<std::endl;
-	// uchar_image.rand_init();
-	// std::cout<<"uchar_image sum "<<uchar_image.sum()<<std::endl;
-	// uchar_image.integrate();
-	// std::cout<<"uchar_image sum "<<uchar_image.sum(0, 0, 99, 99)<<std::endl;
+	// std::cout<<"uchar_image sum "<<uchar_image.Sum()<<std::endl;
+	// uchar_image.RandInit();
+	// std::cout<<"uchar_image sum "<<uchar_image.Sum()<<std::endl;
+	// uchar_image.Integrate();
+	// std::cout<<"uchar_image sum "<<uchar_image.Sum(0, 0, 99, 99)<<std::endl;
 	
 	int num_rows = 5;
 	int num_cols = 5;
 	Image<unsigned char> int_image(num_rows, num_cols);
-	std::cout<<"int_image sum "<<int_image.sum()<<std::endl;
-	int_image.rand_init(0, 1);
+	std::cout<<"int_image sum "<<int_image.Sum()<<std::endl;
+	int_image.RandInit(0, 1);
 	std::cout<<"printing image after rand_init"<<std::endl;
-	int_image.print();
+	int_image.Print();
 	std::cout<<"int_image[0, "<< num_cols-1 <<"] "
 	<<int_image[0][num_cols-1]<<std::endl;
 	std::cout<<"int_image["<<num_rows-1<< ", "
 		<<num_cols-1<<"] "<<int_image[num_rows-1][num_cols-1]
 		<<std::endl;
-	std::cout<<"int_image sum "<<int_image.sum()<<std::endl;
+	std::cout<<"int_image sum "<<int_image.Sum()<<std::endl;
 	std::cout<<"integrating image "<<std::endl;
 
-	int_image.integrate();
+	int_image.Integrate();
 	std::cout<<"printing image sum after integrate"<<std::endl;
-	int_image.print_sum();
+	int_image.PrintSum();
 	std::cout<<"int_image sum (-1, -1, "<<num_rows-1<<", "
 		<<num_cols-1<<") "
-		<<int_image.sum(-1, -1, num_rows-1, num_cols-1)
+		<<int_image.Sum(-1, -1, num_rows-1, num_cols-1)
 		<<std::endl;
 	return 0;
 }
