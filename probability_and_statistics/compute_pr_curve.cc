@@ -103,6 +103,8 @@ void OptimizedPRCurveComputation(
 	}
 
 	for (auto& op: *op_points) {
+		// subtract 1 from bin index so the threshold equal to
+		// to 1/(num_thresholds + 1) maps to the zeroth bin.
 		int bin = -1 + static_cast<int>(op.threshold * (num_thresholds + 1));
 		op.false_negatives = positives_histogram[bin];
 		op.true_positives = pos_sum - positives_histogram[bin];
