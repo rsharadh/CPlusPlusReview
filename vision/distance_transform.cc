@@ -36,6 +36,7 @@ public:
 		}
 	}
 
+
 	void L1DistanceTransform() {
 		// Traverse from top-left to bottom-right
 		for (unsigned int row = 0; row < height_; row++) {
@@ -100,6 +101,11 @@ public:
 		}
 	}
 
+
+	void L2DistanceTransform() {
+		throw std::string("L2DistanceTransform not supported yet");
+	}	
+	
 	const std::vector<std::vector<int>>& Distance() const {
 		return distance_;
 	}
