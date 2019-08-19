@@ -113,6 +113,7 @@ std::string InfixToPostfix(const std::string& infix_expression) {
 						GetOperator(op_stack.top()), 
 						GetOperator(c))) {
 					postfix_expression += std::string(1, op_stack.top());
+					op_stack.pop();
 				}
 				op_stack.push(c);
 			}
@@ -131,10 +132,10 @@ std::string InfixToPostfix(const std::string& infix_expression) {
 }
 
 // Based on postfix (reverse Polish notation) eval,
-// https://www.geeksforgeeks.org/expression-evaluation/ 
+// https://www.geeksforgeeks.org/stack-set-4-evaluation-postfix-expression/
+// or http://faculty.cs.niu.edu/~hutchins/csci241/eval.htm 
 template <class T>
 T EvaluatePostfix(const std::string& postfix_expression) {
-	std::stack<Operator> operators;
 	std::stack<T> operands;
 
 	for (const auto c : postfix_expression) {
@@ -143,21 +144,14 @@ T EvaluatePostfix(const std::string& postfix_expression) {
 		}
 		if (is_operator(c)) {
 			auto this_op = GetOperator(c);
-			//Print(this_op);
-			while (
-				!operators.empty() 
-				&& IsHigherPrecedence(
-					operators.top(), this_op)) {
-				auto top_op = operators.top();
-				operators.pop();
-				auto a = operands.top(); 
-				operands.pop();
-				auto b = operands.top(); 
-				operands.pop(); 
-				T result = Apply(top_op, a, b);
-				operands.push(result);
-			}
-			operators.push(this_op);
+			auto a = operands.top(); 
+			operands.pop();
+			auto b = operands.top(); 
+			operands.pop(); 
+			T result = Apply(this_op, a, b);
+			//std::cout<<a<<" ";Print(top_op);std::cout" "<<b<<" = "<<result<<std::endl;
+			operands.push(result);
+
 		} else {
 			if (c > '9' || c < '0') {
 				throw std::string("invalid expression");
@@ -166,15 +160,8 @@ T EvaluatePostfix(const std::string& postfix_expression) {
 			operands.push(c - '0');
 		}
 	}
-	while (!operators.empty()) {
-		auto top_op = operators.top();
-		operators.pop();
-		auto a = operands.top(); 
-		operands.pop();
-		auto b = operands.top(); 
-		operands.pop(); 
-		T result = Apply(top_op, a, b);
-		operands.push(result);
+	if (operands.size() != 1) {
+		throw std::string("invalid expression");
 	}
 	return operands.top();
 }
@@ -185,6 +172,7 @@ int main(int argc, char** argv) {
 	std::vector<std::string> postfix_expressions = {
 		"2 3 +",
 		"3 4 -",
+		"2 4 *",
 		"6 6 *",
 		"6 6 /"};
 	for (auto& postfix_expression : postfix_expressions){
@@ -198,7 +186,8 @@ int main(int argc, char** argv) {
 		"2 + 4 * 3",
 		"3 - 4",
 		"6 * 6",
-		"6 / 6"};
+		"6 / 6",
+		"2 * 4 + 6",};
 	for (auto& infix_expression : infix_expressions){
 		auto postfix_expression = InfixToPostfix<int>(infix_expression);
 		std::cout<<infix_expression<<" in post-fix as "<<postfix_expression<<std::endl;
